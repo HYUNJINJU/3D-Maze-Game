@@ -106,7 +106,7 @@ function loadRanking(difficulty = 'all') {
         row.innerHTML = `
             <td>${index + 1}</td>
             <td><span class="difficulty-tag ${difficultyClass}">${difficultyLabel}</span></td>
-            <td>${ranking.time}초</td>
+            <td>${ranking.time}sec</td>
             <td>${ranking.date}</td>
         `;
     });
