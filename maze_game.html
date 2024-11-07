@@ -105,6 +105,25 @@
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
+
+        .modal-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .reset-btn {
+            background-color: #ff4444;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            }
+
+        .reset-btn:hover {
+            background-color: #cc0000;
+        }
         
         .close {
             position: absolute;
@@ -209,10 +228,13 @@
     <div id="rankingModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>랭킹</h2>
-                <span class="close">&times;</span>
+                <h2>Ranking</h2>
+                <div class="modal-controls">
+                    <button id="resetRanking" class="reset-btn">Reset Ranking</button>
+                    <span class="close">&times;</span>
+                </div>
             </div>
-
+    
             <div class="difficulty-filter">
                 <button class="filter-btn active" data-difficulty="all">All</button>
                 <button class="filter-btn" data-difficulty="easy">Easy</button>
@@ -220,14 +242,14 @@
                 <button class="filter-btn" data-difficulty="hard">Hard</button>
                 <button class="filter-btn" data-difficulty="custom">Custom</button>
             </div>
-
+    
             <table class="ranking-table">
                 <thead>
                     <tr>
-                        <th>순위</th>
-                        <th>난이도</th>
-                        <th>기록</th>
-                        <th>날짜</th>
+                        <th>Ranking</th>
+                        <th>Difficulty</th>
+                        <th>Record</th>
+                        <th>Date</th>
                     </tr>
                 </thead>
                 <tbody id="rankingBody">
