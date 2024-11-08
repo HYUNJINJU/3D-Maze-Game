@@ -302,12 +302,9 @@
                 const maze = Array.from({ length: mazeHeight }, () => Array(mazeWidth).fill(1));
 
                 const entrancePosition = 1;
-                const exitPosition = mazeWidth - 2;
+                let exitX, exitY;
 
                 maze[mazeHeight - 1][entrancePosition] = 0; // Entrance
-                maze[1][exitPosition] = 0; // Exit
-                maze[1][exitPosition - 1] = 0; // Path next to exit
-                maze[2][exitPosition] = 0; // Path below exit
 
                 carve(entrancePosition, mazeHeight - 2); // Start carving from the entrance position
 
@@ -336,6 +333,32 @@
                     }
                 }
 
+                // Find dead-ends
+                const deadEnds = [];
+
+                for (let y = 1; y < mazeHeight - 1; y++) {
+                    for (let x = 1; x < mazeWidth - 1; x++) {
+                        if (maze[y][x] === 0) {
+                            let count = 0;
+
+                            if (maze[y - 1][x] === 1) count++;    // Up
+                            if (maze[y + 1][x] === 1) count++;    // Down
+                            if (maze[y][x - 1] === 1) count++;    // Left
+                            if (maze[y][x + 1] === 1) count++;    // Right
+
+                            if (count === 3) deadEnds.push({x, y});    // Add to exit candidates only if one side is opened
+                        }
+                    }
+                }
+
+                // Set a random dead-end to an exit
+                if (deadEnds.length > 0) {
+                    const randomIndex = Math.floor(Math.random() * deadEnds.length);
+
+                    exitX = deadEnds[randomIndex].x;
+                    exitY = deadEnds[randomIndex].y;
+                }                    
+
                 // Create walls based on maze array
                 const walls = [];
                 const wallMaterial = new THREE.MeshStandardMaterial({ color: 0x888888 });
@@ -344,7 +367,7 @@
                     row.forEach((cell, x) => {
                         if (cell === 1) {
                             if (x === entrancePosition && z === mazeHeight - 1) return; // Entrance
-                            if (x === exitPosition && z === 1) return; // Exit
+                            if (x === exitX && z === exitY) return; // Exit
 
                             const wallGeometry = new THREE.BoxGeometry(2, 5, 2);
                             const wall = new THREE.Mesh(wallGeometry, wallMaterial);
@@ -365,7 +388,7 @@
                 const exitGeometry = new THREE.BoxGeometry(1, 0.1, 1);
                 const exitMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 });
                 const exit = new THREE.Mesh(exitGeometry, exitMaterial);
-                exit.position.set((exitPosition - mazeWidth / 2) * 2, 0.1, (1 - mazeHeight / 2) * 2);
+                exit.position.set((exitX - mazeWidth / 2) * 2, 0.1, (exitY - mazeHeight / 2) * 2);
                 scene.add(exit);
 
                 // Create visual effects for entrance
@@ -379,7 +402,7 @@
                 const exitEffectGeometry = new THREE.BoxGeometry(2, 5, 2); // 박스 형태로 변경
                 const exitEffectMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000, transparent: true, opacity: 0.5 });
                 const exitEffect = new THREE.Mesh(exitEffectGeometry, exitEffectMaterial);
-                exitEffect.position.set((exitPosition - mazeWidth / 2) * 2, 2.5, (1 - mazeHeight / 2) * 2); // Y좌표를 2.5로 설정하여 바닥에 위치
+                exitEffect.position.set((exitX - mazeWidth / 2) * 2, 2.5, (exitY - mazeHeight / 2) * 2); // Y좌표를 2.5로 설정하여 바닥에 위치
                 scene.add(exitEffect);
 
                 // Set camera position at the entrance
@@ -597,8 +620,8 @@
                         camera.position.copy(previousPosition);
                     }
 
-                    const exitPositionX = (exitPosition - mazeWidth / 2) * 2;
-                    const exitPositionZ = (1 - mazeHeight / 2) * 2;
+                    const exitPositionX = (exitX - mazeWidth / 2) * 2;
+                    const exitPositionZ = (exitY - mazeHeight / 2) * 2;
 
                     const distanceToExit = Math.sqrt(
                         Math.pow(camera.position.x - exitPositionX, 2) + 
@@ -719,7 +742,7 @@
                     }
                 }
 
-                findSolutionPath(maze, [entrancePosition, mazeHeight - 1], [exitPosition, 1]);
+                findSolutionPath(maze, [entrancePosition, mazeHeight - 1], [exitX, exitY]);
             };
 
             // Add event listeners for difficulty buttons
