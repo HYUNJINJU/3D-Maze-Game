@@ -266,7 +266,6 @@
             let n;
             let solutionPath = []; // 정답 경로를 저장할 배열
             let difficulty = 0; // easy: 0, medium: 1, hard: 2, custom: 3
-            let playerPositionMarker; // player현재 위치 표현하기 위함
 
             const startGame = (size) => {
                 n = size;
@@ -489,14 +488,6 @@
                         // Show the solution path
                         showSolutionPath(scene, solutionPath);
                         
-                        if(!playerPositionMarker){
-                            const markerMaterial = new THREE.MeshBasicMaterial({color : 0xff00ff});
-                            const markerGeometry = new THREE.CylinderGeometry(0.5, 0.5, 0.1, 32);
-                            playerPositionMarker = new THREE.Mesh(markerGeometry, markerMaterial);
-                            scene.add(playerPositionMarker);
-                        }
-                        playerPositionMarker.position.set(camera.position.x, 0.5, camera.position.z);
-
 
                         setTimeout(() => {
                             isTopView = false;
@@ -504,7 +495,6 @@
                             camera.quaternion.copy(originalQuaternion);
                             window.addEventListener('mousemove', mouseMoveHandler); // Re-enable mouse movement handler
                             clearSolutionPath(scene); // Clear the solution path after returning
-                            scene.remove(playerPositionMarker);
                         }, 3000); // 3 seconds
                     }
                 });
