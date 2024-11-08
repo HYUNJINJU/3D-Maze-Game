@@ -488,6 +488,7 @@
 
                         // Show the solution path
                         showSolutionPath(scene, solutionPath);
+                        
 
                         setTimeout(() => {
                             isTopView = false;
@@ -571,6 +572,7 @@
                     createItems();
 
                 // Modify camera movement logic in animate function
+                let previousPosition = camera.position.clone();
                 function animate() {
                     requestAnimationFrame(animate);
 
@@ -589,7 +591,10 @@
 
                     const newPosition = camera.position.clone().add(direction);
                     if (!checkCollision(newPosition)) {
+                        previousPosition.copy(camera.position);
                         camera.position.add(direction);
+                    } else {
+                        camera.position.copy(previousPosition);
                     }
 
                     const exitPositionX = (exitPosition - mazeWidth / 2) * 2;
@@ -630,10 +635,12 @@
 
                 // Collision detection function
                 function checkCollision(newPosition) {
+                    const cameraBoundingSphere = new THREE.Sphere(newPosition, 0.5);
+
                     for (const wall of walls) {
-                        const box = new THREE.Box3().setFromObject(wall);
-                        if (box.containsPoint(newPosition)) {
-                            return true; // Collision detected
+                        const wallBoundingBox = new THREE.Box3().setFromObject(wall);
+                        if(wallBoundingBox.intersectsSphere(cameraBoundingSphere)){
+                            return true; // collision occurs
                         }
                     }
                     return false; // No collision
