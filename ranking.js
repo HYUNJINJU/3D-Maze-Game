@@ -19,6 +19,15 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+document.getElementById('resetRanking').addEventListener('click', function() {
+    if (confirm('Do you really want to remove the all records?')) {
+        localStorage.removeItem(RANKING_KEY); // mazeRanking 키를 사용
+        document.getElementById('rankingBody').innerHTML = ''; // 테이블 비우기
+        alert('Removed all records');
+        loadRanking('all'); // 테이블 다시 로드 (빈 상태로)
+    }
+});
+
 function getDifficultyTag(difficulty) {
     if (typeof difficulty === 'number') {
         switch(difficulty) {
@@ -75,7 +84,7 @@ function loadRanking(difficulty = 'all') {
 
     if (filteredRankings.length === 0) {
         const row = tbody.insertRow();
-        row.innerHTML = '<td colspan="4">등록된 기록이 없습니다.</td>';
+        row.innerHTML = '<td colspan="4">There is no record.</td>';
         return;
     }
 
@@ -97,7 +106,7 @@ function loadRanking(difficulty = 'all') {
         row.innerHTML = `
             <td>${index + 1}</td>
             <td><span class="difficulty-tag ${difficultyClass}">${difficultyLabel}</span></td>
-            <td>${ranking.time}초</td>
+            <td>${ranking.time}sec</td>
             <td>${ranking.date}</td>
         `;
     });
@@ -117,3 +126,4 @@ function closeRanking() {
         modal.style.display = 'none';
     }
 }
+

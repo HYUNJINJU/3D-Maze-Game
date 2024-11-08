@@ -105,6 +105,25 @@
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
+
+        .modal-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .reset-btn {
+            background-color: #ff4444;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            }
+
+        .reset-btn:hover {
+            background-color: #cc0000;
+        }
         
         .close {
             position: absolute;
@@ -209,10 +228,13 @@
     <div id="rankingModal" class="modal">
         <div class="modal-content">
             <div class="modal-header">
-                <h2>랭킹</h2>
-                <span class="close">&times;</span>
+                <h2>Ranking</h2>
+                <div class="modal-controls">
+                    <button id="resetRanking" class="reset-btn">Reset Ranking</button>
+                    <span class="close">&times;</span>
+                </div>
             </div>
-
+    
             <div class="difficulty-filter">
                 <button class="filter-btn active" data-difficulty="all">All</button>
                 <button class="filter-btn" data-difficulty="easy">Easy</button>
@@ -220,14 +242,14 @@
                 <button class="filter-btn" data-difficulty="hard">Hard</button>
                 <button class="filter-btn" data-difficulty="custom">Custom</button>
             </div>
-
+    
             <table class="ranking-table">
                 <thead>
                     <tr>
-                        <th>순위</th>
-                        <th>난이도</th>
-                        <th>기록</th>
-                        <th>날짜</th>
+                        <th>Ranking</th>
+                        <th>Difficulty</th>
+                        <th>Record</th>
+                        <th>Date</th>
                     </tr>
                 </thead>
                 <tbody id="rankingBody">
@@ -248,6 +270,7 @@
             const startGame = (size) => {
                 n = size;
                 let gameWon = false;
+                const items = [];
 
                 // Hide input elements
                 document.getElementById('inputContainer').style.display = 'none';
@@ -465,6 +488,7 @@
 
                         // Show the solution path
                         showSolutionPath(scene, solutionPath);
+                        
 
                         setTimeout(() => {
                             isTopView = false;
@@ -480,9 +504,79 @@
                     keys[event.code] = false;
                 });
 
+                // Function to create items
+                function createItems() {
+                        const itemCount = Math.max(1, Math.floor(n / 10)); // Set number of items to "maze size / 10", minimum 1
+                        for (let i = 0; i < itemCount; i++) {
+                            const itemGeometry = new THREE.SphereGeometry(0.5, 16, 16);
+                            const itemMaterial = new THREE.MeshStandardMaterial({ color: 0xffff00 });
+                            const item = new THREE.Mesh(itemGeometry, itemMaterial);
+
+                            let x, z;
+                            do {
+                                x = Math.floor(Math.random() * mazeWidth);
+                                z = Math.floor(Math.random() * mazeHeight);
+                            } while (maze[z][x] !== 0); // Only place items in empty spaces
+
+                            item.position.set((x - mazeWidth / 2) * 2, 1, (z - mazeHeight / 2) * 2);
+                            items.push(item);
+                            scene.add(item);
+                        }
+                    }
+
+                    // Function to activate item effect
+                    function activateItemEffect() {
+                        if (!isTopView) {
+                            isTopView = true;
+                            const originalPosition = camera.position.clone();
+                            const originalQuaternion = camera.quaternion.clone();
+                            camera.position.set(0, n * 2, 0);
+                            camera.lookAt(0, 0, 0);
+
+                            // Disable mouse movement during top view
+                            window.removeEventListener('mousemove', mouseMoveHandler);
+
+                            if (originalEffect) scene.remove(originalEffect);
+
+                            // Create blue visual effect at the original position
+                            originalEffect = new THREE.Mesh(
+                                new THREE.CylinderGeometry(1, 1, 0.1, 32),
+                                new THREE.MeshStandardMaterial({ color: 0x0000ff, transparent: true, opacity: 0.5 })
+                            );
+                            originalEffect.position.set(originalPosition.x, 4.99, originalPosition.z);
+                            scene.add(originalEffect); // Add the effect to the scene
+
+                            setTimeout(() => {
+                                if (originalEffect) scene.remove(originalEffect);
+                                isTopView = false;
+                                camera.position.copy(originalPosition);
+                                camera.quaternion.copy(originalQuaternion);
+                                window.addEventListener('mousemove', mouseMoveHandler); // Re-enable mouse movement handler
+                            }, 3000); // 3 seconds
+                        }
+                    }
+
+                    // Function to check and handle item collision
+                    function checkItemCollision() {
+                        items.forEach((item, index) => {
+                            const distance = camera.position.distanceTo(item.position);
+                            if (distance < 1) { // Pick up item when near
+                                scene.remove(item);
+                                items.splice(index, 1);
+                                activateItemEffect();
+                            }
+                        });
+                    }
+
+                    // Call to create items
+                    createItems();
+
                 // Modify camera movement logic in animate function
+                let previousPosition = camera.position.clone();
                 function animate() {
                     requestAnimationFrame(animate);
+
+                    checkItemCollision();
 
                     const direction = new THREE.Vector3();
                     if(!isTopView) {
@@ -497,7 +591,10 @@
 
                     const newPosition = camera.position.clone().add(direction);
                     if (!checkCollision(newPosition)) {
+                        previousPosition.copy(camera.position);
                         camera.position.add(direction);
+                    } else {
+                        camera.position.copy(previousPosition);
                     }
 
                     const exitPositionX = (exitPosition - mazeWidth / 2) * 2;
@@ -538,10 +635,12 @@
 
                 // Collision detection function
                 function checkCollision(newPosition) {
+                    const cameraBoundingSphere = new THREE.Sphere(newPosition, 0.5);
+
                     for (const wall of walls) {
-                        const box = new THREE.Box3().setFromObject(wall);
-                        if (box.containsPoint(newPosition)) {
-                            return true; // Collision detected
+                        const wallBoundingBox = new THREE.Box3().setFromObject(wall);
+                        if(wallBoundingBox.intersectsSphere(cameraBoundingSphere)){
+                            return true; // collision occurs
                         }
                     }
                     return false; // No collision
