@@ -14,6 +14,7 @@
         canvas {
             display: block;
         }
+
         .modal,
         .modal-content,
         .close,
@@ -21,6 +22,7 @@
         .ranking-table {
             cursor: default;
         }
+
         .close:hover,
         .filter-btn,
         .difficultyButton,
@@ -91,10 +93,10 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.7);
+            background-color: rgba(0, 0, 0, 0.7);
             z-index: 1000;
         }
-        
+
         .modal-content {
             position: relative;
             background-color: white;
@@ -103,7 +105,7 @@
             width: 90%;
             max-width: 600px;
             border-radius: 8px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
         .modal-controls {
@@ -111,6 +113,7 @@
             align-items: center;
             gap: 10px;
         }
+
         .reset-btn {
             background-color: #ff4444;
             color: white;
@@ -119,12 +122,12 @@
             border-radius: 4px;
             cursor: pointer;
             font-size: 14px;
-            }
+        }
 
         .reset-btn:hover {
             background-color: #cc0000;
         }
-        
+
         .close {
             position: absolute;
             right: 15px;
@@ -145,7 +148,8 @@
             margin-top: 20px;
         }
 
-        .ranking-table th, .ranking-table td {
+        .ranking-table th,
+        .ranking-table td {
             border: 1px solid #ddd;
             padding: 12px;
             text-align: center;
@@ -159,9 +163,17 @@
             background-color: #fafafa;
         }
 
-        .gold { background-color: rgba(255, 215, 0, 0.2); }
-        .silver { background-color: rgba(192, 192, 192, 0.2); }
-        .bronze { background-color: rgba(205, 127, 50, 0.2); }
+        .gold {
+            background-color: rgba(255, 215, 0, 0.2);
+        }
+
+        .silver {
+            background-color: rgba(192, 192, 192, 0.2);
+        }
+
+        .bronze {
+            background-color: rgba(205, 127, 50, 0.2);
+        }
 
         /* 난이도 태그 스타일 */
         .difficulty-tag {
@@ -171,9 +183,17 @@
             margin-right: 5px;
         }
 
-        .easy { background-color: #90EE90; }
-        .medium { background-color: #FFB74D; }
-        .hard { background-color: #FF8A80; }
+        .easy {
+            background-color: #90EE90;
+        }
+
+        .medium {
+            background-color: #FFB74D;
+        }
+
+        .hard {
+            background-color: #FF8A80;
+        }
 
         .modal-header {
             display: flex;
@@ -203,374 +223,415 @@
             color: white;
             border-color: #4CAF50;
         }
-        .custom { 
-            background-color: #B39DDB; 
+
+        .custom {
+            background-color: #B39DDB;
         }
     </style>
-</head>
-<body>
-    <div id="inputContainer">
-        <button class="difficultyButton" id="easyButton">Easy (11)</button>
-        <button class="difficultyButton" id="mediumButton">Medium (21)</button>
-        <button class="difficultyButton" id="hardButton">Hard (31)</button>
-        <button class="rankingButton" id="rankingButton">Ranking</button>
-        <br>
-        <label for="mazeSize">Or Enter Custom Size (odd number):</label>
-        <input type="number" id="mazeSize" value="11" min="3" step="2">
-        <button id="startButton">Start Game</button>
-    </div>
-    <div id="timer">Time: 0s</div>
-    <div id="winMessage">You win!</div>
-    <div id="finalTime">Your Record: 0s</div>
-    <div id="goMain">Click to go to main menu</div>
+    </head>
 
-    <!-- 랭킹 모달 -->
-    <div id="rankingModal" class="modal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h2>Ranking</h2>
-                <div class="modal-controls">
-                    <button id="resetRanking" class="reset-btn">Reset Ranking</button>
-                    <span class="close">&times;</span>
-                </div>
-            </div>
-    
-            <div class="difficulty-filter">
-                <button class="filter-btn active" data-difficulty="all">All</button>
-                <button class="filter-btn" data-difficulty="easy">Easy</button>
-                <button class="filter-btn" data-difficulty="medium">Medium</button>
-                <button class="filter-btn" data-difficulty="hard">Hard</button>
-                <button class="filter-btn" data-difficulty="custom">Custom</button>
-            </div>
-    
-            <table class="ranking-table">
-                <thead>
-                    <tr>
-                        <th>Ranking</th>
-                        <th>Difficulty</th>
-                        <th>Record</th>
-                        <th>Date</th>
-                    </tr>
-                </thead>
-                <tbody id="rankingBody">
-                </tbody>
-            </table>
+    <body>
+        <div id="inputContainer">
+            <select id="wall_texture" class="menu_select">
+                <option value="0">Normal Brick</option>
+                <option value="1">White Brick</option>
+                <option value="2">Gray Brick</option>
+                <option value="3">Black Brick</option>
+            </select>
+            <select id="platform_texture" class="menu_select">
+                <option value="0">Linoleum</option>
+                <option value="1">Soil</option>
+                <option value="2">Grass1</option>
+                <option value="3">Grass2</option>
+            </select>
+            <br>
+            <button class="difficultyButton" id="easyButton">Easy (11)</button>
+            <button class="difficultyButton" id="mediumButton">Medium (21)</button>
+            <button class="difficultyButton" id="hardButton">Hard (31)</button>
+            <button class="rankingButton" id="rankingButton">Ranking</button>
+            <br>
+            <label for="mazeSize">Or Enter Custom Size (odd number):</label>
+            <input type="number" id="mazeSize" value="11" min="3" step="2">
+            <button id="startButton">Start Game</button>
         </div>
-    </div>
+        <div id="timer">Time: 0s</div>
+        <div id="winMessage">You win!</div>
+        <div id="finalTime">Your Record: 0s</div>
+        <div id="goMain">Click to go to main menu</div>
 
-    <script src="ranking.js"></script>
-    <script src="three.min.js"></script>
+        <!-- 랭킹 모달 -->
+        <div id="rankingModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h2>Ranking</h2>
+                    <div class="modal-controls">
+                        <button id="resetRanking" class="reset-btn">Reset Ranking</button>
+                        <span class="close">&times;</span>
+                    </div>
+                </div>
 
-    <script>
-        document.addEventListener('DOMContentLoaded', () => {
-            let n;
-            let solutionPath = []; // 정답 경로를 저장할 배열
-            let difficulty = 0; // easy: 0, medium: 1, hard: 2, custom: 3
-            let originalFog; // fog 상태를 저장할 변수 추가
+                <div class="difficulty-filter">
+                    <button class="filter-btn active" data-difficulty="all">All</button>
+                    <button class="filter-btn" data-difficulty="easy">Easy</button>
+                    <button class="filter-btn" data-difficulty="medium">Medium</button>
+                    <button class="filter-btn" data-difficulty="hard">Hard</button>
+                    <button class="filter-btn" data-difficulty="custom">Custom</button>
+                </div>
 
-            const startGame = (size) => {
-                n = size;
-                let gameWon = false;
-                const items = [];
+                <table class="ranking-table">
+                    <thead>
+                        <tr>
+                            <th>Ranking</th>
+                            <th>Difficulty</th>
+                            <th>Record</th>
+                            <th>Date</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rankingBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-                // Hide input elements
-                document.getElementById('inputContainer').style.display = 'none';
+        <script src="ranking.js"></script>
+        <script src="three.min.js"></script>
 
-                // Scene, Camera, Renderer
-                const scene = new THREE.Scene();
-                // Add fog to the scene
-                scene.fog = new THREE.Fog(0x007700, 1, 20); // Color matches ground, starts at 1 unit, fades to 20 units
-                const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-                const renderer = new THREE.WebGLRenderer();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-                document.body.appendChild(renderer.domElement);
+        <script>
+            document.addEventListener('DOMContentLoaded', () => {
+                let n;
+                let solutionPath = []; // 정답 경로를 저장할 배열
+                let difficulty = 0; // easy: 0, medium: 1, hard: 2, custom: 3
+                let originalFog; // fog 상태를 저장할 변수 추가
 
-                // Add a light source
-                const ambientLight = new THREE.AmbientLight(0x404040); // Soft white light
-                scene.add(ambientLight);
-                const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-                directionalLight.position.set(5, 10, 7.5);
-                scene.add(directionalLight);
+                const platformTextures = [
+                    'texture/ground1.jfif',
+                    'texture/ground2.jfif',
+                    'texture/ground3.jfif',
+                    'texture/ground4.jfif'
+                ];
 
-                // Ground with texture
-                const groundGeometry = new THREE.PlaneGeometry(10000, 10000);
-                const groundMaterial = new THREE.MeshStandardMaterial({ 
-                    color: 0x007700,
-                    side: THREE.DoubleSide,
-                    roughness: 0.8,
-                    metalness: 0.2
-                });
-                const ground = new THREE.Mesh(groundGeometry, groundMaterial);
-                ground.rotation.x = Math.PI / 2;
-                scene.add(ground);
+                const wallTextures = [
+                    'texture/wall1.jpg',
+                    'texture/wall2.jfif',
+                    'texture/wall3.jfif',
+                    'texture/wall4.jfif'
+                ];
 
-                // Add fog particles for mystical effect
-                const particleGeometry = new THREE.BufferGeometry();
-                const particleCount = 1000;
-                const particlePositions = new Float32Array(particleCount * 3);
+                const startGame = (size) => {
+                    n = size;
+                    let gameWon = false;
+                    const items = [];
 
-                for (let i = 0; i < particleCount * 3; i += 3) {
-                    particlePositions[i] = Math.random() * 100 - 50;     // x
-                    particlePositions[i + 1] = Math.random() * 2;        // y (near ground)
-                    particlePositions[i + 2] = Math.random() * 100 - 50; // z
-                }
+                    // Hide input elements
+                    document.getElementById('inputContainer').style.display = 'none';
 
-                particleGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+                    // Scene, Camera, Renderer
+                    const scene = new THREE.Scene();
+                    scene.background = new THREE.Color(0x87CEEB);
+                    // Add fog to the scene
+                    scene.fog = new THREE.Fog(0x87CEEB, 1, 20); // Color matches ground, starts at 1 unit, fades to 20 units
+                    const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+                    const renderer = new THREE.WebGLRenderer();
+                    renderer.setSize(window.innerWidth, window.innerHeight);
+                    document.body.appendChild(renderer.domElement);
 
-                const particleMaterial = new THREE.PointsMaterial({
-                    color: 0xccffcc,
-                    size: 0.1,
-                    transparent: true,
-                    opacity: 0.5,
-                    blending: THREE.AdditiveBlending
-                });
+                    // Add a light source
+                    const ambientLight = new THREE.AmbientLight(0x404040); // Soft white light
+                    scene.add(ambientLight);
+                    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
+                    directionalLight.position.set(5, 10, 7.5);
+                    scene.add(directionalLight);
 
-                const particles = new THREE.Points(particleGeometry, particleMaterial);
-                scene.add(particles);
+                    // Loading textures
+                    const selectedPlatformTexture = platformTextures[document.getElementById('platform_texture').value];
+                    const selectedWallTexture = wallTextures[document.getElementById('wall_texture').value];
 
-                // Maze Generation
-                const mazeWidth = n + 2;
-                const mazeHeight = n + 2;
-                const maze = Array.from({ length: mazeHeight }, () => Array(mazeWidth).fill(1));
+                    const textureLoader = new THREE.TextureLoader();
+                    const groundTexture = textureLoader.load(selectedPlatformTexture);
+                    const wallTexture = textureLoader.load(selectedWallTexture);
 
-                const entrancePosition = 1;
-                let exitX, exitY;
+                    //const groundMaterial = new THREE.MeshStandardMaterial({ map: groundTexture });
+                    const wallMaterial = new THREE.MeshStandardMaterial({ map: wallTexture });
 
-                maze[mazeHeight - 1][entrancePosition] = 0; // Entrance
+                    // Ground with texture
+                    const groundGeometry = new THREE.PlaneGeometry(10000, 10000);
+                    const groundMaterial = new THREE.MeshStandardMaterial({
+                        map: groundTexture,     // Set the texture to the 'map' property of the material
+                        side: THREE.DoubleSide,
+                        roughness: 0.8,
+                        metalness: 0.2
+                    });
+                    const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+                    ground.rotation.x = Math.PI / 2;
+                    scene.add(ground);
 
-                carve(entrancePosition, mazeHeight - 2); // Start carving from the entrance position
+                    // Add fog particles for mystical effect
+                    const particleGeometry = new THREE.BufferGeometry();
+                    const particleCount = 1000;
+                    const particlePositions = new Float32Array(particleCount * 3);
 
-                for (let x = 0; x < mazeWidth; x++) {
-                    maze[0][x] = 1; // Top row walls
-                    maze[mazeHeight - 1][x] = 1; // Bottom row walls
-                }
+                    for (let i = 0; i < particleCount * 3; i += 3) {
+                        particlePositions[i] = Math.random() * 100 - 50;     // x
+                        particlePositions[i + 1] = Math.random() * 2;        // y (near ground)
+                        particlePositions[i + 2] = Math.random() * 100 - 50; // z
+                    }
 
-                for (let y = 0; y < mazeHeight; y++) {
-                    maze[y][0] = 1; // Left column walls
-                    maze[y][mazeWidth - 1] = 1; // Right column walls
-                }
+                    particleGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
 
-                // Generate the maze paths
-                function carve(x, y) {
-                    const directions = [[0, -2], [2, 0], [0, 2], [-2, 0]];
-                    directions.sort(() => Math.random() - 0.5);
+                    const particleMaterial = new THREE.PointsMaterial({
+                        color: 0xccffcc,
+                        size: 0.1,
+                        transparent: true,
+                        opacity: 0.5,
+                        blending: THREE.AdditiveBlending
+                    });
 
-                    for (const [dx, dy] of directions) {
-                        const nx = x + dx, ny = y + dy;
-                        if (nx > 0 && nx < mazeWidth - 1 && ny > 0 && ny < mazeHeight - 1 && maze[ny][nx] === 1) {
-                            maze[ny][nx] = 0; // Open path
-                            maze[y + dy / 2][x + dx / 2] = 0; // Carve the wall
-                            carve(nx, ny); // Recursively carve from the new position
+                    const particles = new THREE.Points(particleGeometry, particleMaterial);
+                    scene.add(particles);
+
+                    // Maze Generation
+                    const mazeWidth = n + 2;
+                    const mazeHeight = n + 2;
+                    const maze = Array.from({ length: mazeHeight }, () => Array(mazeWidth).fill(1));
+
+                    const entrancePosition = 1;
+                    let exitX, exitY;
+
+                    maze[mazeHeight - 1][entrancePosition] = 0; // Entrance
+
+                    carve(entrancePosition, mazeHeight - 2); // Start carving from the entrance position
+
+                    for (let x = 0; x < mazeWidth; x++) {
+                        maze[0][x] = 1; // Top row walls
+                        maze[mazeHeight - 1][x] = 1; // Bottom row walls
+                    }
+
+                    for (let y = 0; y < mazeHeight; y++) {
+                        maze[y][0] = 1; // Left column walls
+                        maze[y][mazeWidth - 1] = 1; // Right column walls
+                    }
+
+                    // Generate the maze paths
+                    function carve(x, y) {
+                        const directions = [[0, -2], [2, 0], [0, 2], [-2, 0]];
+                        directions.sort(() => Math.random() - 0.5);
+
+                        for (const [dx, dy] of directions) {
+                            const nx = x + dx, ny = y + dy;
+                            if (nx > 0 && nx < mazeWidth - 1 && ny > 0 && ny < mazeHeight - 1 && maze[ny][nx] === 1) {
+                                maze[ny][nx] = 0; // Open path
+                                maze[y + dy / 2][x + dx / 2] = 0; // Carve the wall
+                                carve(nx, ny); // Recursively carve from the new position
+                            }
                         }
                     }
-                }
 
-                // Find dead-ends
-                const deadEnds = [];
+                    // Find dead-ends
+                    const deadEnds = [];
 
-                for (let y = 1; y < mazeHeight - 1; y++) {
-                    for (let x = 1; x < mazeWidth - 1; x++) {
-                        if (maze[y][x] === 0) {
-                            let count = 0;
+                    for (let y = 1; y < mazeHeight - 1; y++) {
+                        for (let x = 1; x < mazeWidth - 1; x++) {
+                            if (maze[y][x] === 0) {
+                                let count = 0;
 
-                            if (maze[y - 1][x] === 1) count++;    // Up
-                            if (maze[y + 1][x] === 1) count++;    // Down
-                            if (maze[y][x - 1] === 1) count++;    // Left
-                            if (maze[y][x + 1] === 1) count++;    // Right
+                                if (maze[y - 1][x] === 1) count++;    // Up
+                                if (maze[y + 1][x] === 1) count++;    // Down
+                                if (maze[y][x - 1] === 1) count++;    // Left
+                                if (maze[y][x + 1] === 1) count++;    // Right
 
-                            if (count === 3) deadEnds.push({x, y});    // Add to exit candidates only if one side is opened
+                                if (count === 3) deadEnds.push({ x, y });    // Add to exit candidates only if one side is opened
+                            }
                         }
                     }
-                }
 
-                // Set a random dead-end to an exit
-                if (deadEnds.length > 0) {
-                    const randomIndex = Math.floor(Math.random() * deadEnds.length);
+                    // Set a random dead-end to an exit
+                    if (deadEnds.length > 0) {
+                        const randomIndex = Math.floor(Math.random() * deadEnds.length);
 
-                    exitX = deadEnds[randomIndex].x;
-                    exitY = deadEnds[randomIndex].y;
-                }                    
+                        exitX = deadEnds[randomIndex].x;
+                        exitY = deadEnds[randomIndex].y;
+                    }
 
-                // Create walls based on maze array
-                const walls = [];
-                const wallMaterial = new THREE.MeshStandardMaterial({ color: 0x888888 });
+                    // Create walls based on maze array
+                    const walls = [];
+                    //const wallMaterial = new THREE.MeshStandardMaterial({ color: 0x888888 });
 
-                maze.forEach((row, z) => {
-                    row.forEach((cell, x) => {
-                        if (cell === 1) {
-                            if (x === entrancePosition && z === mazeHeight - 1) return; // Entrance
-                            if (x === exitX && z === exitY) return; // Exit
+                    maze.forEach((row, z) => {
+                        row.forEach((cell, x) => {
+                            if (cell === 1) {
+                                if (x === entrancePosition && z === mazeHeight - 1) return; // Entrance
+                                if (x === exitX && z === exitY) return; // Exit
 
-                            const wallGeometry = new THREE.BoxGeometry(2, 5, 2);
-                            const wall = new THREE.Mesh(wallGeometry, wallMaterial);
-                            wall.position.set((x - mazeWidth / 2) * 2, 2.5, (z - mazeHeight / 2) * 2);
-                            scene.add(wall);
-                            walls.push(wall);
+                                const wallGeometry = new THREE.BoxGeometry(2, 5, 2);
+                                const wall = new THREE.Mesh(wallGeometry, wallMaterial);
+                                wall.position.set((x - mazeWidth / 2) * 2, 2.5, (z - mazeHeight / 2) * 2);
+                                scene.add(wall);
+                                walls.push(wall);
+                            }
+                        });
+                    });
+
+                    // Create entrance and exit
+                    const entranceGeometry = new THREE.BoxGeometry(1, 0.1, 1);
+                    const entranceMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
+                    const entrance = new THREE.Mesh(entranceGeometry, entranceMaterial);
+                    entrance.position.set((entrancePosition - mazeWidth / 2) * 2, 0.1, (mazeHeight - 1 - mazeHeight / 2) * 2);
+                    scene.add(entrance);
+
+                    const exitGeometry = new THREE.BoxGeometry(1, 0.1, 1);
+                    const exitMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 });
+                    const exit = new THREE.Mesh(exitGeometry, exitMaterial);
+                    exit.position.set((exitX - mazeWidth / 2) * 2, 0.1, (exitY - mazeHeight / 2) * 2);
+                    scene.add(exit);
+
+                    // Create visual effects for entrance
+                    const entranceEffectGeometry = new THREE.BoxGeometry(2, 5, 2); // 박스 형태로 변경
+                    const entranceEffectMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00, transparent: true, opacity: 0.5 });
+                    const entranceEffect = new THREE.Mesh(entranceEffectGeometry, entranceEffectMaterial);
+                    entranceEffect.position.set((entrancePosition - mazeWidth / 2) * 2, 2.5, (mazeHeight - 1 - mazeHeight / 2) * 2); // Y좌표를 2.5로 설정하여 바닥에 위치
+                    scene.add(entranceEffect);
+
+                    // Create visual effects for exit
+                    const exitEffectGeometry = new THREE.BoxGeometry(2, 5, 2); // 박스 형태로 변경
+                    const exitEffectMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000, transparent: true, opacity: 0.5 });
+                    const exitEffect = new THREE.Mesh(exitEffectGeometry, exitEffectMaterial);
+                    exitEffect.position.set((exitX - mazeWidth / 2) * 2, 2.5, (exitY - mazeHeight / 2) * 2); // Y좌표를 2.5로 설정하여 바닥에 위치
+                    scene.add(exitEffect);
+
+                    // Set camera position at the entrance
+                    camera.position.set((entrancePosition - mazeWidth / 2) * 2, 1.5, (mazeHeight - 1 - mazeHeight / 2) * 2);
+                    camera.lookAt(entrance.position);
+
+                    // Timer variables
+                    let timerInterval;
+                    let elapsedTime = 0;
+
+                    // Display timer
+                    const timerElement = document.getElementById('timer');
+
+                    // Start timer function
+                    function startTimer() {
+                        timerInterval = setInterval(() => {
+                            elapsedTime++;
+                            timerElement.textContent = `Time: ${elapsedTime}s`;
+                        }, 1000);
+                    }
+
+                    // Handle window resize
+                    window.addEventListener('resize', () => {
+                        camera.aspect = window.innerWidth / window.innerHeight;
+                        camera.updateProjectionMatrix();
+                        renderer.setSize(window.innerWidth, window.innerHeight);
+                    });
+
+                    // Controls
+                    const movementSpeed = 0.08;
+                    const mouseSensitivity = 0.004;
+                    let mouseX = 0;
+                    let mouseY = 0;
+                    let isTopView = false;
+
+                    document.body.addEventListener('click', () => {
+                        document.body.requestPointerLock();
+                        startTimer(); // Start the timer when the game begins
+                    });
+
+                    // Mouse movement handler function
+                    function mouseMoveHandler(event) {
+                        if (document.pointerLockElement) {
+                            mouseX = event.movementX;
+                            mouseY = event.movementY;
+
+                            const euler = new THREE.Euler(0, 0, 0, 'YXZ'); // Use YXZ order
+                            euler.setFromQuaternion(camera.quaternion); // Get current rotation
+                            euler.y -= mouseX * mouseSensitivity; // Y-axis rotation
+                            euler.x -= mouseY * mouseSensitivity; // X-axis rotation
+                            euler.x = Math.max(-Math.PI / 2 + 0.1, Math.min(Math.PI / 2 - 0.1, euler.x)); // Limit X rotation
+
+                            camera.quaternion.setFromEuler(euler); // Update camera quaternion
+                        }
+                    }
+
+                    // Add mouse movement listener
+                    window.addEventListener('mousemove', mouseMoveHandler);
+
+                    // Keyboard input listener
+                    const keys = {};
+                    let originalEffect;
+                    window.addEventListener('keydown', (event) => {
+                        keys[event.code] = true;
+
+                        // Activate top view on 'Q' key press
+                        if (event.code === 'KeyQ' && !isTopView) {
+                            isTopView = true;
+                            const originalPosition = camera.position.clone();
+                            const originalQuaternion = camera.quaternion.clone();
+                            camera.position.set(0, n * 2, 0);
+                            camera.lookAt(0, 0, 0);
+
+                            // Temporarily remove fog
+                            scene.fog = null;
+
+                            // Disable mouse movement during top view
+                            window.removeEventListener('mousemove', mouseMoveHandler);
+
+                            if (originalEffect) scene.remove(originalEffect);
+
+                            // Create blue visual effect at the original position
+                            originalEffect = new THREE.Mesh(
+                                new THREE.CylinderGeometry(1, 1, 0.1, 32),
+                                new THREE.MeshStandardMaterial({ color: 0x0000ff, transparent: true, opacity: 0.5 })
+                            );
+                            originalEffect.position.set(originalPosition.x, 4.99, originalPosition.z);
+                            scene.add(originalEffect); // Add the effect to the scene
+
+                            setTimeout(() => {
+                                if (originalEffect) scene.remove(originalEffect);
+                                isTopView = false;
+                                camera.position.copy(originalPosition);
+                                camera.quaternion.copy(originalQuaternion);
+                                window.addEventListener('mousemove', mouseMoveHandler); // Re-enable mouse movement handler
+                                // Restore original fog
+                                scene.fog = originalFog;
+                            }, 3000); // 3 seconds
+                        }
+
+                        // Activate top view and show solution on 'T' key press
+                        if (event.code === 'KeyT' && !isTopView) {
+                            isTopView = true;
+                            const originalPosition = camera.position.clone();
+                            const originalQuaternion = camera.quaternion.clone();
+                            camera.position.set(0, n * 2, 0);
+                            camera.lookAt(0, 0, 0);
+
+                            // Temporarily remove fog
+                            scene.fog = null;
+
+                            // Disable mouse movement during top view
+                            window.removeEventListener('mousemove', mouseMoveHandler);
+
+                            // Show the solution path
+                            showSolutionPath(scene, solutionPath);
+
+
+                            setTimeout(() => {
+                                isTopView = false;
+                                camera.position.copy(originalPosition);
+                                camera.quaternion.copy(originalQuaternion);
+                                window.addEventListener('mousemove', mouseMoveHandler); // Re-enable mouse movement handler
+                                clearSolutionPath(scene); // Clear the solution path after returning
+                                // Restore original fog
+                                scene.fog = originalFog;
+                            }, 3000); // 3 seconds
                         }
                     });
-                });
 
-                // Create entrance and exit
-                const entranceGeometry = new THREE.BoxGeometry(1, 0.1, 1);
-                const entranceMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00 });
-                const entrance = new THREE.Mesh(entranceGeometry, entranceMaterial);
-                entrance.position.set((entrancePosition - mazeWidth / 2) * 2, 0.1, (mazeHeight - 1 - mazeHeight / 2) * 2);
-                scene.add(entrance);
+                    window.addEventListener('keyup', (event) => {
+                        keys[event.code] = false;
+                    });
 
-                const exitGeometry = new THREE.BoxGeometry(1, 0.1, 1);
-                const exitMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000 });
-                const exit = new THREE.Mesh(exitGeometry, exitMaterial);
-                exit.position.set((exitX - mazeWidth / 2) * 2, 0.1, (exitY - mazeHeight / 2) * 2);
-                scene.add(exit);
-
-                // Create visual effects for entrance
-                const entranceEffectGeometry = new THREE.BoxGeometry(2, 5, 2); // 박스 형태로 변경
-                const entranceEffectMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00, transparent: true, opacity: 0.5 });
-                const entranceEffect = new THREE.Mesh(entranceEffectGeometry, entranceEffectMaterial);
-                entranceEffect.position.set((entrancePosition - mazeWidth / 2) * 2, 2.5, (mazeHeight - 1 - mazeHeight / 2) * 2); // Y좌표를 2.5로 설정하여 바닥에 위치
-                scene.add(entranceEffect);
-
-                // Create visual effects for exit
-                const exitEffectGeometry = new THREE.BoxGeometry(2, 5, 2); // 박스 형태로 변경
-                const exitEffectMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000, transparent: true, opacity: 0.5 });
-                const exitEffect = new THREE.Mesh(exitEffectGeometry, exitEffectMaterial);
-                exitEffect.position.set((exitX - mazeWidth / 2) * 2, 2.5, (exitY - mazeHeight / 2) * 2); // Y좌표를 2.5로 설정하여 바닥에 위치
-                scene.add(exitEffect);
-
-                // Set camera position at the entrance
-                camera.position.set((entrancePosition - mazeWidth / 2) * 2, 1.5, (mazeHeight - 1 - mazeHeight / 2) * 2);
-                camera.lookAt(entrance.position);
-
-                // Timer variables
-                let timerInterval;
-                let elapsedTime = 0;
-
-                // Display timer
-                const timerElement = document.getElementById('timer');
-
-                // Start timer function
-                function startTimer() {
-                    timerInterval = setInterval(() => {
-                        elapsedTime++;
-                        timerElement.textContent = `Time: ${elapsedTime}s`;
-                    }, 1000);
-                }
-
-                // Handle window resize
-                window.addEventListener('resize', () => {
-                    camera.aspect = window.innerWidth / window.innerHeight;
-                    camera.updateProjectionMatrix();
-                    renderer.setSize(window.innerWidth, window.innerHeight);
-                });
-
-                // Controls
-                const movementSpeed = 0.08;
-                const mouseSensitivity = 0.004;
-                let mouseX = 0;
-                let mouseY = 0;
-                let isTopView = false;
-
-                document.body.addEventListener('click', () => {
-                    document.body.requestPointerLock();
-                    startTimer(); // Start the timer when the game begins
-                });
-
-                // Mouse movement handler function
-                function mouseMoveHandler(event) {
-                    if (document.pointerLockElement) {
-                        mouseX = event.movementX;
-                        mouseY = event.movementY;
-
-                        const euler = new THREE.Euler(0, 0, 0, 'YXZ'); // Use YXZ order
-                        euler.setFromQuaternion(camera.quaternion); // Get current rotation
-                        euler.y -= mouseX * mouseSensitivity; // Y-axis rotation
-                        euler.x -= mouseY * mouseSensitivity; // X-axis rotation
-                        euler.x = Math.max(-Math.PI / 2 + 0.1, Math.min(Math.PI / 2 - 0.1, euler.x)); // Limit X rotation
-
-                        camera.quaternion.setFromEuler(euler); // Update camera quaternion
-                    }
-                }
-
-                // Add mouse movement listener
-                window.addEventListener('mousemove', mouseMoveHandler);
-
-                // Keyboard input listener
-                const keys = {};
-                let originalEffect;
-                window.addEventListener('keydown', (event) => {
-                    keys[event.code] = true;
-
-                    // Activate top view on 'Q' key press
-                    if (event.code === 'KeyQ' && !isTopView) {
-                        isTopView = true;
-                        const originalPosition = camera.position.clone();
-                        const originalQuaternion = camera.quaternion.clone();
-                        camera.position.set(0, n * 2, 0);
-                        camera.lookAt(0, 0, 0);
-
-                        // Temporarily remove fog
-                        scene.fog = null;
-
-                        // Disable mouse movement during top view
-                        window.removeEventListener('mousemove', mouseMoveHandler);
-
-                        if(originalEffect) scene.remove(originalEffect);
-
-                        // Create blue visual effect at the original position
-                        originalEffect = new THREE.Mesh(
-                            new THREE.CylinderGeometry(1, 1, 0.1, 32),
-                            new THREE.MeshStandardMaterial({ color: 0x0000ff, transparent: true, opacity: 0.5 })
-                        );
-                        originalEffect.position.set(originalPosition.x, 4.99, originalPosition.z);
-                        scene.add(originalEffect); // Add the effect to the scene
-
-                        setTimeout(() => {
-                            if (originalEffect) scene.remove(originalEffect);
-                            isTopView = false;
-                            camera.position.copy(originalPosition);
-                            camera.quaternion.copy(originalQuaternion);
-                            window.addEventListener('mousemove', mouseMoveHandler); // Re-enable mouse movement handler
-                            // Restore original fog
-                            scene.fog = originalFog;
-                        }, 3000); // 3 seconds
-                    }
-
-                    // Activate top view and show solution on 'T' key press
-                    if (event.code === 'KeyT' && !isTopView) {
-                        isTopView = true;
-                        const originalPosition = camera.position.clone();
-                        const originalQuaternion = camera.quaternion.clone();
-                        camera.position.set(0, n * 2, 0);
-                        camera.lookAt(0, 0, 0);
-
-                        // Temporarily remove fog
-                        scene.fog = null;
-
-                        // Disable mouse movement during top view
-                        window.removeEventListener('mousemove', mouseMoveHandler);
-
-                        // Show the solution path
-                        showSolutionPath(scene, solutionPath);
-                        
-
-                        setTimeout(() => {
-                            isTopView = false;
-                            camera.position.copy(originalPosition);
-                            camera.quaternion.copy(originalQuaternion);
-                            window.addEventListener('mousemove', mouseMoveHandler); // Re-enable mouse movement handler
-                            clearSolutionPath(scene); // Clear the solution path after returning
-                            // Restore original fog
-                            scene.fog = originalFog;
-                        }, 3000); // 3 seconds
-                    }
-                });
-
-                window.addEventListener('keyup', (event) => {
-                    keys[event.code] = false;
-                });
-
-                // Function to create items
-                function createItems() {
+                    // Function to create items
+                    function createItems() {
                         const itemCount = Math.max(1, Math.floor(n / 10)); // Set number of items to "maze size / 10", minimum 1
                         for (let i = 0; i < itemCount; i++) {
                             const itemGeometry = new THREE.SphereGeometry(0.5, 16, 16);
@@ -641,193 +702,193 @@
                     // Call to create items
                     createItems();
 
-                // Modify camera movement logic in animate function
-                let previousPosition = camera.position.clone();
-                function animate() {
-                    requestAnimationFrame(animate);
+                    // Modify camera movement logic in animate function
+                    let previousPosition = camera.position.clone();
+                    function animate() {
+                        requestAnimationFrame(animate);
 
-                    // Animate particles
-                    const positions = particles.geometry.attributes.position.array;
-                    for (let i = 0; i < positions.length; i += 3) {
-                        positions[i + 1] += 0.01; // Move particles up slowly
-                        if (positions[i + 1] > 2) { // Reset particles when they get too high
-                            positions[i + 1] = 0;
-                        }
-                    }
-                    particles.geometry.attributes.position.needsUpdate = true;
-
-                    checkItemCollision();
-
-                    const direction = new THREE.Vector3();
-                    if(!isTopView) {
-                        if (keys['KeyW']) direction.z -= movementSpeed;
-                        if (keys['KeyS']) direction.z += movementSpeed;
-                        if (keys['KeyA']) direction.x -= movementSpeed;
-                        if (keys['KeyD']) direction.x += movementSpeed;
-                    }
-                    
-                    direction.applyQuaternion(camera.quaternion);
-                    direction.y = 0;
-
-                    const newPosition = camera.position.clone().add(direction);
-                    if (!checkCollision(newPosition)) {
-                        previousPosition.copy(camera.position);
-                        camera.position.add(direction);
-                    } else {
-                        camera.position.copy(previousPosition);
-                    }
-
-                    const exitPositionX = (exitX - mazeWidth / 2) * 2;
-                    const exitPositionZ = (exitY - mazeHeight / 2) * 2;
-
-                    const distanceToExit = Math.sqrt(
-                        Math.pow(camera.position.x - exitPositionX, 2) + 
-                        Math.pow(camera.position.z - exitPositionZ, 2)
-                    );
-
-                    let x = 0;
-                    function fadeText() {
-                        document.getElementById('goMain').style.opacity = (Math.sin(x) / 2 + 0.5).toString();
-                        x += 0.045;
-                        requestAnimationFrame(fadeText);
-                    }
-                    if (distanceToExit < 1) { // 종료 지점으로부터 1 unit 이내에 있으면 승리
-                        if (!gameWon) { // 게임이 아직 끝나지 않았을 때만 실행
-                            gameWon = true;
-                            clearInterval(timerInterval);
-                            document.getElementById('timer').style.display = 'none';
-                            document.getElementById('winMessage').style.display = 'block';
-                            document.getElementById('finalTime').textContent = `Your Record: ${elapsedTime}s`;
-                            document.getElementById('finalTime').style.display = 'block';
-                            document.getElementById('goMain').style.display = 'block';
-                            fadeText();
-                            addRecord(difficulty, elapsedTime);
-
-                            window.addEventListener('click', (event) => {
-                                setTimeout('location.reload()', 0);
-                            });
-                        }
-                    }
-
-                    renderer.render(scene, camera);
-                }
-                animate();
-
-                // Collision detection function
-                function checkCollision(newPosition) {
-                    const cameraBoundingSphere = new THREE.Sphere(newPosition, 0.5);
-
-                    for (const wall of walls) {
-                        const wallBoundingBox = new THREE.Box3().setFromObject(wall);
-                        if(wallBoundingBox.intersectsSphere(cameraBoundingSphere)){
-                            return true; // collision occurs
-                        }
-                    }
-                    return false; // No collision
-                }
-
-                // Function to show win message
-                function showWinMessage() {
-                    const winMessageElement = document.getElementById('winMessage');
-                    winMessageElement.style.display = 'block'; // Show the win message
-
-                    const finalTimeElement = document.getElementById('finalTime');
-                    finalTimeElement.textContent = `Your Record: ${elapsedTime}s`; // Display the elapsed time
-                    finalTimeElement.style.display = 'block'; // Show the final time
-                }
-
-                // Function to show solution path
-                // Function to show solution path
-                function showSolutionPath(scene, path) {
-                    const pathMaterial = new THREE.MeshStandardMaterial({ color: 0xffff00 });
-                    path.forEach(pos => {
-                        const tileGeometry = new THREE.BoxGeometry(2, 0.1, 2); // Create a flat tile
-                        const tile = new THREE.Mesh(tileGeometry, pathMaterial);
-                        tile.position.set((pos.x - mazeWidth / 2) * 2, 0.05, (pos.z - mazeHeight / 2) * 2); // Position the tile
-                        scene.add(tile);
-                        const solutionEffectGeometry = new THREE.BoxGeometry(2, 5, 2); // 박스 형태로 변경
-                        const solutionEffectMaterial = new THREE.MeshStandardMaterial({ color: 0xffff00 });
-                        const solutionEffect = new THREE.Mesh(solutionEffectGeometry, solutionEffectMaterial);
-                        solutionEffect.position.set((pos.x - mazeWidth / 2) * 2, 2.5, (pos.z - mazeHeight / 2) * 2); // Y좌표를 2.5로 설정하여 바닥에 위치
-                        scene.add(solutionEffect); // Yellow color for the solution path
-                    });
-                }
-
-                // Function to clear the solution path
-                function clearSolutionPath(scene) {
-                    // Remove all yellow tiles added for the solution path
-                    const tilesToRemove = scene.children.filter(child => child.material && child.material.color.equals(new THREE.Color(0xffff00)));
-                    tilesToRemove.forEach(tile => scene.remove(tile));
-                }
-
-
-                // Find the solution path (a simple BFS or DFS can be used here)
-                function findSolutionPath(maze, entrance, exit) {
-                    const queue = [];
-                    const visited = new Set();
-                    const path = {};
-                    const [startX, startY] = entrance;
-                    const [endX, endY] = exit;
-
-                    queue.push([startX, startY]);
-                    visited.add(`${startX},${startY}`);
-
-                    const directions = [[0, 1], [1, 0], [0, -1], [-1, 0]]; // Down, Right, Up, Left
-
-                    while (queue.length > 0) {
-                        const [x, y] = queue.shift();
-
-                        if (x === endX && y === endY) {
-                            let current = [x, y];
-                            while (current) {
-                                solutionPath.push({ x: current[0], z: current[1] });
-                                current = path[current.join(',')];
-                            }
-                            return;
-                        }
-
-                        for (const [dx, dy] of directions) {
-                            const newX = x + dx;
-                            const newY = y + dy;
-
-                            if (maze[newY] && maze[newY][newX] === 0 && !visited.has(`${newX},${newY}`)) {
-                                queue.push([newX, newY]);
-                                visited.add(`${newX},${newY}`);
-                                path[`${newX},${newY}`] = [x, y];
+                        // Animate particles
+                        const positions = particles.geometry.attributes.position.array;
+                        for (let i = 0; i < positions.length; i += 3) {
+                            positions[i + 1] += 0.01; // Move particles up slowly
+                            if (positions[i + 1] > 2) { // Reset particles when they get too high
+                                positions[i + 1] = 0;
                             }
                         }
+                        particles.geometry.attributes.position.needsUpdate = true;
+
+                        checkItemCollision();
+
+                        const direction = new THREE.Vector3();
+                        if (!isTopView) {
+                            if (keys['KeyW']) direction.z -= movementSpeed;
+                            if (keys['KeyS']) direction.z += movementSpeed;
+                            if (keys['KeyA']) direction.x -= movementSpeed;
+                            if (keys['KeyD']) direction.x += movementSpeed;
+                        }
+
+                        direction.applyQuaternion(camera.quaternion);
+                        direction.y = 0;
+
+                        const newPosition = camera.position.clone().add(direction);
+                        if (!checkCollision(newPosition)) {
+                            previousPosition.copy(camera.position);
+                            camera.position.add(direction);
+                        } else {
+                            camera.position.copy(previousPosition);
+                        }
+
+                        const exitPositionX = (exitX - mazeWidth / 2) * 2;
+                        const exitPositionZ = (exitY - mazeHeight / 2) * 2;
+
+                        const distanceToExit = Math.sqrt(
+                            Math.pow(camera.position.x - exitPositionX, 2) +
+                            Math.pow(camera.position.z - exitPositionZ, 2)
+                        );
+
+                        let x = 0;
+                        function fadeText() {
+                            document.getElementById('goMain').style.opacity = (Math.sin(x) / 2 + 0.5).toString();
+                            x += 0.045;
+                            requestAnimationFrame(fadeText);
+                        }
+                        if (distanceToExit < 1) { // 종료 지점으로부터 1 unit 이내에 있으면 승리
+                            if (!gameWon) { // 게임이 아직 끝나지 않았을 때만 실행
+                                gameWon = true;
+                                clearInterval(timerInterval);
+                                document.getElementById('timer').style.display = 'none';
+                                document.getElementById('winMessage').style.display = 'block';
+                                document.getElementById('finalTime').textContent = `Your Record: ${elapsedTime}s`;
+                                document.getElementById('finalTime').style.display = 'block';
+                                document.getElementById('goMain').style.display = 'block';
+                                fadeText();
+                                addRecord(difficulty, elapsedTime);
+
+                                window.addEventListener('click', (event) => {
+                                    setTimeout('location.reload()', 0);
+                                });
+                            }
+                        }
+
+                        renderer.render(scene, camera);
                     }
-                }
+                    animate();
 
-                findSolutionPath(maze, [entrancePosition, mazeHeight - 1], [exitX, exitY]);
-            };
+                    // Collision detection function
+                    function checkCollision(newPosition) {
+                        const cameraBoundingSphere = new THREE.Sphere(newPosition, 0.5);
 
-            // Add event listeners for difficulty buttons
-            document.getElementById('easyButton').addEventListener('click', () => {
-                difficulty = 0; // 먼저 난이도 설정
-                startGame(11);
+                        for (const wall of walls) {
+                            const wallBoundingBox = new THREE.Box3().setFromObject(wall);
+                            if (wallBoundingBox.intersectsSphere(cameraBoundingSphere)) {
+                                return true; // collision occurs
+                            }
+                        }
+                        return false; // No collision
+                    }
+
+                    // Function to show win message
+                    function showWinMessage() {
+                        const winMessageElement = document.getElementById('winMessage');
+                        winMessageElement.style.display = 'block'; // Show the win message
+
+                        const finalTimeElement = document.getElementById('finalTime');
+                        finalTimeElement.textContent = `Your Record: ${elapsedTime}s`; // Display the elapsed time
+                        finalTimeElement.style.display = 'block'; // Show the final time
+                    }
+
+                    // Function to show solution path
+                    // Function to show solution path
+                    function showSolutionPath(scene, path) {
+                        const pathMaterial = new THREE.MeshStandardMaterial({ color: 0xffff00 });
+                        path.forEach(pos => {
+                            const tileGeometry = new THREE.BoxGeometry(2, 0.1, 2); // Create a flat tile
+                            const tile = new THREE.Mesh(tileGeometry, pathMaterial);
+                            tile.position.set((pos.x - mazeWidth / 2) * 2, 0.05, (pos.z - mazeHeight / 2) * 2); // Position the tile
+                            scene.add(tile);
+                            const solutionEffectGeometry = new THREE.BoxGeometry(2, 5, 2); // 박스 형태로 변경
+                            const solutionEffectMaterial = new THREE.MeshStandardMaterial({ color: 0xffff00 });
+                            const solutionEffect = new THREE.Mesh(solutionEffectGeometry, solutionEffectMaterial);
+                            solutionEffect.position.set((pos.x - mazeWidth / 2) * 2, 2.5, (pos.z - mazeHeight / 2) * 2); // Y좌표를 2.5로 설정하여 바닥에 위치
+                            scene.add(solutionEffect); // Yellow color for the solution path
+                        });
+                    }
+
+                    // Function to clear the solution path
+                    function clearSolutionPath(scene) {
+                        // Remove all yellow tiles added for the solution path
+                        const tilesToRemove = scene.children.filter(child => child.material && child.material.color.equals(new THREE.Color(0xffff00)));
+                        tilesToRemove.forEach(tile => scene.remove(tile));
+                    }
+
+
+                    // Find the solution path (a simple BFS or DFS can be used here)
+                    function findSolutionPath(maze, entrance, exit) {
+                        const queue = [];
+                        const visited = new Set();
+                        const path = {};
+                        const [startX, startY] = entrance;
+                        const [endX, endY] = exit;
+
+                        queue.push([startX, startY]);
+                        visited.add(`${startX},${startY}`);
+
+                        const directions = [[0, 1], [1, 0], [0, -1], [-1, 0]]; // Down, Right, Up, Left
+
+                        while (queue.length > 0) {
+                            const [x, y] = queue.shift();
+
+                            if (x === endX && y === endY) {
+                                let current = [x, y];
+                                while (current) {
+                                    solutionPath.push({ x: current[0], z: current[1] });
+                                    current = path[current.join(',')];
+                                }
+                                return;
+                            }
+
+                            for (const [dx, dy] of directions) {
+                                const newX = x + dx;
+                                const newY = y + dy;
+
+                                if (maze[newY] && maze[newY][newX] === 0 && !visited.has(`${newX},${newY}`)) {
+                                    queue.push([newX, newY]);
+                                    visited.add(`${newX},${newY}`);
+                                    path[`${newX},${newY}`] = [x, y];
+                                }
+                            }
+                        }
+                    }
+
+                    findSolutionPath(maze, [entrancePosition, mazeHeight - 1], [exitX, exitY]);
+                };
+
+                // Add event listeners for difficulty buttons
+                document.getElementById('easyButton').addEventListener('click', () => {
+                    difficulty = 0; // 먼저 난이도 설정
+                    startGame(11);
+                });
+                document.getElementById('mediumButton').addEventListener('click', () => {
+                    difficulty = 1;
+                    startGame(21);
+                });
+                document.getElementById('hardButton').addEventListener('click', () => {
+                    difficulty = 2;
+                    startGame(31)
+                });
+                // Add event listener to the start button for custom size
+                document.getElementById('startButton').addEventListener('click', () => {
+                    const customSize = parseInt(document.getElementById('mazeSize').value);
+                    if (customSize % 2 !== 0 && customSize >= 3) {
+                        difficulty = customSize; // 커스텀 사이즈를 난이도로 설정
+                        startGame(customSize);
+                    }
+                    else {
+                        alert('Please enter a valid size (odd number greater than or equal to 3).');
+                    }
+                });
             });
-            document.getElementById('mediumButton').addEventListener('click', () => {
-                difficulty = 1;
-                startGame(21);
-            });
-            document.getElementById('hardButton').addEventListener('click', () => {
-                difficulty = 2;
-                startGame(31)
-            });
-            // Add event listener to the start button for custom size
-            document.getElementById('startButton').addEventListener('click', () => {
-                const customSize = parseInt(document.getElementById('mazeSize').value);
-                if (customSize % 2 !== 0 && customSize >= 3) {
-                    difficulty = customSize; // 커스텀 사이즈를 난이도로 설정
-                    startGame(customSize);
-                }
-                else {
-                    alert('Please enter a valid size (odd number greater than or equal to 3).');
-                }
-            });
-        });
-    </script>
-</body>
+        </script>
+    </body>
 
 </html>
