@@ -266,6 +266,7 @@
             let n;
             let solutionPath = []; // 정답 경로를 저장할 배열
             let difficulty = 0; // easy: 0, medium: 1, hard: 2, custom: 3
+            let originalFog; // fog 상태를 저장할 변수 추가
 
             const startGame = (size) => {
                 n = size;
@@ -277,6 +278,8 @@
 
                 // Scene, Camera, Renderer
                 const scene = new THREE.Scene();
+                // Add fog to the scene
+                scene.fog = new THREE.Fog(0x007700, 1, 20); // Color matches ground, starts at 1 unit, fades to 20 units
                 const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
                 const renderer = new THREE.WebGLRenderer();
                 renderer.setSize(window.innerWidth, window.innerHeight);
@@ -289,12 +292,41 @@
                 directionalLight.position.set(5, 10, 7.5);
                 scene.add(directionalLight);
 
-                // Ground
+                // Ground with texture
                 const groundGeometry = new THREE.PlaneGeometry(10000, 10000);
-                const groundMaterial = new THREE.MeshBasicMaterial({ color: 0x007700, side: THREE.DoubleSide });
+                const groundMaterial = new THREE.MeshStandardMaterial({ 
+                    color: 0x007700,
+                    side: THREE.DoubleSide,
+                    roughness: 0.8,
+                    metalness: 0.2
+                });
                 const ground = new THREE.Mesh(groundGeometry, groundMaterial);
-                ground.rotation.x = Math.PI / 2; // Rotate the ground
+                ground.rotation.x = Math.PI / 2;
                 scene.add(ground);
+
+                // Add fog particles for mystical effect
+                const particleGeometry = new THREE.BufferGeometry();
+                const particleCount = 1000;
+                const particlePositions = new Float32Array(particleCount * 3);
+
+                for (let i = 0; i < particleCount * 3; i += 3) {
+                    particlePositions[i] = Math.random() * 100 - 50;     // x
+                    particlePositions[i + 1] = Math.random() * 2;        // y (near ground)
+                    particlePositions[i + 2] = Math.random() * 100 - 50; // z
+                }
+
+                particleGeometry.setAttribute('position', new THREE.BufferAttribute(particlePositions, 3));
+
+                const particleMaterial = new THREE.PointsMaterial({
+                    color: 0xccffcc,
+                    size: 0.1,
+                    transparent: true,
+                    opacity: 0.5,
+                    blending: THREE.AdditiveBlending
+                });
+
+                const particles = new THREE.Points(particleGeometry, particleMaterial);
+                scene.add(particles);
 
                 // Maze Generation
                 const mazeWidth = n + 2;
@@ -476,6 +508,9 @@
                         camera.position.set(0, n * 2, 0);
                         camera.lookAt(0, 0, 0);
 
+                        // Temporarily remove fog
+                        scene.fog = null;
+
                         // Disable mouse movement during top view
                         window.removeEventListener('mousemove', mouseMoveHandler);
 
@@ -495,6 +530,8 @@
                             camera.position.copy(originalPosition);
                             camera.quaternion.copy(originalQuaternion);
                             window.addEventListener('mousemove', mouseMoveHandler); // Re-enable mouse movement handler
+                            // Restore original fog
+                            scene.fog = originalFog;
                         }, 3000); // 3 seconds
                     }
 
@@ -505,6 +542,9 @@
                         const originalQuaternion = camera.quaternion.clone();
                         camera.position.set(0, n * 2, 0);
                         camera.lookAt(0, 0, 0);
+
+                        // Temporarily remove fog
+                        scene.fog = null;
 
                         // Disable mouse movement during top view
                         window.removeEventListener('mousemove', mouseMoveHandler);
@@ -519,6 +559,8 @@
                             camera.quaternion.copy(originalQuaternion);
                             window.addEventListener('mousemove', mouseMoveHandler); // Re-enable mouse movement handler
                             clearSolutionPath(scene); // Clear the solution path after returning
+                            // Restore original fog
+                            scene.fog = originalFog;
                         }, 3000); // 3 seconds
                     }
                 });
@@ -556,6 +598,9 @@
                             camera.position.set(0, n * 2, 0);
                             camera.lookAt(0, 0, 0);
 
+                            // Temporarily remove fog for better visibility
+                            scene.fog = null;
+
                             // Disable mouse movement during top view
                             window.removeEventListener('mousemove', mouseMoveHandler);
 
@@ -575,6 +620,8 @@
                                 camera.position.copy(originalPosition);
                                 camera.quaternion.copy(originalQuaternion);
                                 window.addEventListener('mousemove', mouseMoveHandler); // Re-enable mouse movement handler
+                                // Restore original fog
+                                scene.fog = originalFog;
                             }, 3000); // 3 seconds
                         }
                     }
@@ -598,6 +645,16 @@
                 let previousPosition = camera.position.clone();
                 function animate() {
                     requestAnimationFrame(animate);
+
+                    // Animate particles
+                    const positions = particles.geometry.attributes.position.array;
+                    for (let i = 0; i < positions.length; i += 3) {
+                        positions[i + 1] += 0.01; // Move particles up slowly
+                        if (positions[i + 1] > 2) { // Reset particles when they get too high
+                            positions[i + 1] = 0;
+                        }
+                    }
+                    particles.geometry.attributes.position.needsUpdate = true;
 
                     checkItemCollision();
 
