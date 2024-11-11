@@ -156,19 +156,20 @@
 
         #winMessage {
             position: absolute;
-            top: 45%;
+            top: 48%;
             left: 50%;
             transform: translate(-50%, -50%);
             color: yellow;
             font-size: 96px;
             font-weight: bold;
-            text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.5);
+            text-align: center;
+            text-shadow: 2px 2px 10px rgba(0, 0, 0, 0.7);
             display: none;
         }
 
         #finalTime {
             position: absolute;
-            top: 53%;
+            top: 65%;
             left: 50%;
             transform: translate(-50%, -50%);
             color: white;
@@ -179,7 +180,7 @@
 
         #goMain {
             position: absolute;
-            top: 57%;
+            top: 69%;
             left: 50%;
             transform: translate(-50%, -50%);
             color: white;
@@ -437,7 +438,7 @@
                     document.body.appendChild(renderer.domElement);
 
                     // Add a light source
-                    const ambientLight = new THREE.AmbientLight(0x404040, 0.5); // Soft white light
+                    const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
                     scene.add(ambientLight);
 
                     const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
@@ -453,11 +454,11 @@
                     directionalLight.shadow.camera.bottom = -20;
                     scene.add(directionalLight);
 
-                    // 탑뷰용 추가 조명
+                    // Additional light source for topview
                     const topViewLight = new THREE.DirectionalLight(0xffffff, 1);
                     topViewLight.position.set(0, 30, 0);
                     topViewLight.castShadow = true;
-                    topViewLight.visible = false; // 초기에는 비활성화
+                    topViewLight.visible = false;
                     scene.add(topViewLight);
 
                     // Loading textures
