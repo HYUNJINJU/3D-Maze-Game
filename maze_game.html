@@ -823,8 +823,7 @@
                             setTimeout(() => {
                                 if (originalEffect) scene.remove(originalEffect);
                                 isTopView = false;
-                                camera.position.copy(originalPosition);
-                                camera.quaternion.copy(originalQuaternion);
+                                moveCamera(originalPosition, originalQuaternion, false);
                                 window.addEventListener('mousemove', mouseMoveHandler); // Re-enable mouse movement handler
 
                                 const restoredWallMaterial = new THREE.MeshStandardMaterial({ 
@@ -853,6 +852,8 @@
                             if (pressT === 1 && !isTopView && !gameWon) {
                                 isTopView = true;
                                 gameWon = true;
+                                const originalPosition = camera.position.clone();
+                                const originalQuaternion = camera.quaternion.clone();
                                 moveCamera(originalPosition, originalQuaternion, true);
     
                                 // Temporarily remove fog
