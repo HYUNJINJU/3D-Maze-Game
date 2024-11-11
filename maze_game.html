@@ -1023,11 +1023,13 @@
                         direction.y = 0;
 
                         const newPosition = camera.position.clone().add(direction);
-                        if (!checkCollision(newPosition)) {
+                        if (checkCollision(newPosition)) {
+                            const directionFromWall = camera.position.clone().sub(newPosition).normalize();
+                            const repulsionDistance = 0.00001;
+                            camera.position.add(directionFromWall.multiplyScalar(repulsionDistance));
+                        } else {
                             previousPosition.copy(camera.position);
                             camera.position.add(direction);
-                        } else {
-                            camera.position.copy(previousPosition);
                         }
 
                         const exitPositionX = (exitX - mazeWidth / 2) * 2;
