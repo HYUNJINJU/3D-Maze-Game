@@ -744,10 +744,9 @@
                             newCameraQuaternion.setFromEuler(new THREE.Euler(-Math.PI / 2, 0, 0));
 
                             // 각 축을 보간하여 카메라가 움직일 위치 계산
-
                             if (goesUp) {
                                 newCameraPosition.x = lerp(originalPosition.x, 0, t);
-                                newCameraPosition.y = lerp(originalPosition.y, n * 2.5, t);
+                                newCameraPosition.y = lerp(originalPosition.y, Math.log(n)*10 + n, t);
                                 newCameraPosition.z = lerp(originalPosition.z, 0, t);
 
                                 newCameraQuaternion.x = lerp(originalQuaternion.x, newCameraQuaternion.x, t);
@@ -756,7 +755,7 @@
                                 newCameraQuaternion.w = lerp(originalQuaternion.w, newCameraQuaternion.w, t);
                             } else {
                                 newCameraPosition.x = lerp(0, originalPosition.x, t);
-                                newCameraPosition.y = lerp(n * 2.5, originalPosition.y, t);
+                                newCameraPosition.y = lerp(Math.log(n)*10 + n, originalPosition.y, t);
                                 newCameraPosition.z = lerp(0, originalPosition.z, t);
 
                                 newCameraQuaternion.x = lerp(newCameraQuaternion.x, originalQuaternion.x, t);
@@ -846,7 +845,7 @@
                                     }
                                 };
                                 checkCameraPos();
-                            }, 3000); // 3 seconds
+                            }, Math.log(n) * 1000); // 3 seconds
                         }
 
                         let x = 0;
