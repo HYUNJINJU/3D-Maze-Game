@@ -202,6 +202,7 @@
             height: 100%;
             background-color: rgba(0, 0, 0, 0.7);
             z-index: 1000;
+            color: #000;
         }
 
         .modal-content {
@@ -211,8 +212,14 @@
             padding: 20px;
             width: 90%;
             max-width: 600px;
+            max-height: 80vh;
+            overflow-y: auto;
             border-radius: 8px;
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+        .ranking-table-container {
+            max-height: 60vh; /* 테이블 영역의 최대 높이 */
+            overflow-y: auto; /* 테이블 높이를 넘기면 스크롤 생김 */
         }
 
         .modal-controls {
@@ -253,6 +260,7 @@
             width: 100%;
             border-collapse: collapse;
             margin-top: 20px;
+            color: #000;
         }
 
         .ranking-table th,
@@ -377,18 +385,20 @@
                     <button class="filter-btn" data-difficulty="hard">Hard</button>
                     <button class="filter-btn" data-difficulty="custom">Custom</button>
                 </div>
-                <table class="ranking-table">
-                    <thead>
-                        <tr>
-                            <th>Ranking</th>
-                            <th>Difficulty</th>
-                            <th>Record</th>
-                            <th>Date</th>
-                        </tr>
-                    </thead>
-                    <tbody id="rankingBody">
-                    </tbody>
-                </table>
+                <div class="ranking-table-container">
+                    <table class="ranking-table">
+                        <thead>
+                            <tr>
+                                <th>Ranking</th>
+                                <th>Difficulty</th>
+                                <th>Record</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody id="rankingBody">
+                        </tbody>
+                    </table>
+                </div>
             </div>
         </div>
         <script src="ranking.js"></script>
@@ -415,18 +425,40 @@
                     const scene = new THREE.Scene();
                     scene.background = new THREE.Color(0x87CEEB);
                     // Add fog to the scene
-                    scene.fog = new THREE.Fog(0x87CEEB, 1, 17); // Color matches ground, starts at 1 unit, fades to 20 units
+                    scene.fog = new THREE.Fog(0x87CEEB, 1, 17); // Color matches ground, starts at 1 unit, fades to 17 units
                     const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-                    const renderer = new THREE.WebGLRenderer();
+                    const renderer = new THREE.WebGLRenderer({ antialias: true });
                     renderer.setSize(window.innerWidth, window.innerHeight);
+
+                    // 그림자 설정 활성화
+                    renderer.shadowMap.enabled = true;
+                    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+
                     document.body.appendChild(renderer.domElement);
 
                     // Add a light source
-                    const ambientLight = new THREE.AmbientLight(0x404040); // Soft white light
+                    const ambientLight = new THREE.AmbientLight(0x404040, 0.5); // Soft white light
                     scene.add(ambientLight);
-                    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.5);
-                    directionalLight.position.set(5, 10, 7.5);
+
+                    const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+                    directionalLight.position.set(15, 20, 15);
+                    directionalLight.castShadow = true;
+                    directionalLight.shadow.mapSize.width = 2048;
+                    directionalLight.shadow.mapSize.height = 2048;
+                    directionalLight.shadow.camera.near = 0.5;
+                    directionalLight.shadow.camera.far = 50;
+                    directionalLight.shadow.camera.left = -20;
+                    directionalLight.shadow.camera.right = 20;
+                    directionalLight.shadow.camera.top = 20;
+                    directionalLight.shadow.camera.bottom = -20;
                     scene.add(directionalLight);
+
+                    // 탑뷰용 추가 조명
+                    const topViewLight = new THREE.DirectionalLight(0xffffff, 1);
+                    topViewLight.position.set(0, 30, 0);
+                    topViewLight.castShadow = true;
+                    topViewLight.visible = false; // 초기에는 비활성화
+                    scene.add(topViewLight);
 
                     // Loading textures
                     const textureLoader = new THREE.TextureLoader();
@@ -450,6 +482,7 @@
                     });
                     const ground = new THREE.Mesh(groundGeometry, groundMaterial);
                     ground.rotation.x = Math.PI / 2;
+                    ground.receiveShadow = true;
                     scene.add(ground);
 
                     // Add fog particles for mystical effect
@@ -577,6 +610,11 @@
                                 const wallGeometry = new THREE.BoxGeometry(2, 5, 2);
                                 const wall = new THREE.Mesh(wallGeometry, wallMaterial);
                                 wall.position.set((x - mazeWidth / 2) * 2, 2.5, (z - mazeHeight / 2) * 2);
+
+                                // 벽에 그림자 설정 추가
+                                wall.castShadow = true;
+                                wall.receiveShadow = true;
+
                                 scene.add(wall);
                                 walls.push(wall);
                             }
@@ -601,6 +639,8 @@
                     const entranceEffectMaterial = new THREE.MeshStandardMaterial({ color: 0x00ff00, transparent: true, opacity: 0.5 });
                     const entranceEffect = new THREE.Mesh(entranceEffectGeometry, entranceEffectMaterial);
                     entranceEffect.position.set((entrancePosition - mazeWidth / 2) * 2, 2.5, (mazeHeight - 1 - mazeHeight / 2) * 2); // Y좌표를 2.5로 설정하여 바닥에 위치
+                    entranceEffect.castShadow = true;
+                    entranceEffect.receiveShadow = true;
                     scene.add(entranceEffect);
 
                     // Create visual effects for exit
@@ -608,6 +648,8 @@
                     const exitEffectMaterial = new THREE.MeshStandardMaterial({ color: 0xff0000, transparent: true, opacity: 0.5 });
                     const exitEffect = new THREE.Mesh(exitEffectGeometry, exitEffectMaterial);
                     exitEffect.position.set((exitX - mazeWidth / 2) * 2, 2.5, (exitY - mazeHeight / 2) * 2); // Y좌표를 2.5로 설정하여 바닥에 위치
+                    exitEffect.castShadow = true;
+                    exitEffect.receiveShadow = true;
                     scene.add(exitEffect);
 
                     // Set camera position at the entrance
@@ -682,6 +724,7 @@
                     const keys = {};
                     let originalEffect;
                     let timerStarted = false;
+                    
                     window.addEventListener('keydown', (event) => {
                         keys[event.code] = true;
                         if(!timerStarted){
@@ -696,9 +739,24 @@
                             hintElement.textContent = `Hint(Q): ${hint}`;
                             const originalPosition = camera.position.clone();
                             const originalQuaternion = camera.quaternion.clone();
-                            camera.position.set(0, n * 2, 0);
+                            camera.position.set(0, n * 2.5, 0);
                             camera.lookAt(0, 0, 0);
 
+                            topViewLight.visible = true;
+                            directionalLight.visible = false;
+
+                            const originalMaterials = walls.map(wall => wall.material.clone());
+
+                            const whiteMaterial = new THREE.MeshStandardMaterial({ 
+                                color: 0xffffff,
+                                transparent: true,
+                                opacity: 0.5
+                            });
+                            walls.forEach(wall => {
+                                wall.material = whiteMaterial;
+                            });
+
+                            originalFog = scene.fog;
                             // Temporarily remove fog
                             scene.fog = null;
 
@@ -721,8 +779,17 @@
                                 camera.position.copy(originalPosition);
                                 camera.quaternion.copy(originalQuaternion);
                                 window.addEventListener('mousemove', mouseMoveHandler); // Re-enable mouse movement handler
+
+                                const restoredWallMaterial = new THREE.MeshStandardMaterial({ 
+                                    map: wallTexture
+                                });
+                                walls.forEach((wall, index) => {
+                                    wall.material = originalMaterials[index];
+                                });
                                 // Restore original fog
                                 scene.fog = originalFog;
+                                topViewLight.visible = false;
+                                directionalLight.visible = true;
                             }, 3000); // 3 seconds
                         }
 
@@ -794,13 +861,19 @@
                         const itemCount = Math.max(1, Math.floor(n / 10)); // Set number of items to "maze size / 10", minimum 1
                         for (let i = 0; i < itemCount; i++) {
                             const itemGeometry = new THREE.SphereGeometry(0.5, 16, 16);
-                            const itemMaterial = new THREE.MeshStandardMaterial({ color: 0xffff00 });
+                            const itemMaterial = new THREE.MeshStandardMaterial({ 
+                                color: 0xffff00,
+                                emissive: 0xffff00,
+                                emissiveIntensity: 0.5
+                            });
                             const item = new THREE.Mesh(itemGeometry, itemMaterial);
 
                             const randomPathIndex = Math.floor(Math.random() * solutionPath.length);
                             const { x, z } = solutionPath[randomPathIndex];
 
                             item.position.set((x - mazeWidth / 2) * 2, 1.25, (z - mazeHeight / 2) * 2);
+                            item.castShadow = true;
+                            item.receiveShadow = true;
                             items.push(item);
                             scene.add(item);
 
@@ -840,6 +913,10 @@
                             if (distance < 1) { // Pick up item when near
                                 scene.remove(item);
                                 items.splice(index, 1);
+                                if (itemParticlesArray[index]) {
+                                    scene.remove(itemParticlesArray[index]);
+                                    itemParticlesArray.splice(index, 1);
+                                }
                                 const itemParticles = itemParticlesArray[index];
                                 scene.remove(itemParticles);
                                 itemParticlesArray.splice(index, 1);
