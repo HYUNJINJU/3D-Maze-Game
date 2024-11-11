@@ -831,13 +831,21 @@
                                 walls.forEach((wall, index) => {
                                     wall.material = originalMaterials[index];
                                 });
-                                // Restore original fog
-                                scene.fog = originalFog;
                                 topViewLight.visible = false;
                                 directionalLight.visible = true;
 
                                 moveCamera(originalPosition, originalQuaternion, false);
                                 window.addEventListener('mousemove', mouseMoveHandler); // Re-enable mouse movement handler
+                                const checkCameraPos = () => {
+                                    if (camera.position.y <= 1.75) {
+                                        // Restore original fog
+                                        scene.fog = originalFog;
+                                        window.removeEventListener('mousemove', checkCameraPos);
+                                    } else {
+                                        requestAnimationFrame(checkCameraPos);
+                                    }
+                                };
+                                checkCameraPos();
                             }, 3000); // 3 seconds
                         }
 
