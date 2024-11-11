@@ -724,6 +724,54 @@
                     const keys = {};
                     let originalEffect;
                     let timerStarted = false;
+
+                    let steps = 100;
+                    let delay = 1;
+
+                    function lerp(start, end, t) {
+                        return start + (end - start) * t;
+                    }
+
+                    function sleep(ms) {
+                        return new Promise(resolve => setTimeout(resolve, ms));
+                    }
+
+                    async function moveCamera(originalPosition, originalQuaternion, goesUp) {
+                        for (let i = 0; i <= steps; i++) {
+                            let t = i / steps; // 0에서 1 사이의 보간 비율
+                            let newCameraPosition = {x: 0.0, y: 0.0, z: 0.0};
+                            let newCameraQuaternion = new THREE.Quaternion();
+                            newCameraQuaternion.setFromEuler(new THREE.Euler(-Math.PI / 2, 0, 0));
+
+                            // 각 축을 보간하여 카메라가 움직일 위치 계산
+
+                            if (goesUp) {
+                                newCameraPosition.x = lerp(originalPosition.x, 0, t);
+                                newCameraPosition.y = lerp(originalPosition.y, n * 2.5, t);
+                                newCameraPosition.z = lerp(originalPosition.z, 0, t);
+
+                                newCameraQuaternion.x = lerp(originalQuaternion.x, newCameraQuaternion.x, t);
+                                newCameraQuaternion.y = lerp(originalQuaternion.y, newCameraQuaternion.y, t);
+                                newCameraQuaternion.z = lerp(originalQuaternion.z, newCameraQuaternion.z, t);
+                                newCameraQuaternion.w = lerp(originalQuaternion.w, newCameraQuaternion.w, t);
+                            } else {
+                                newCameraPosition.x = lerp(0, originalPosition.x, t);
+                                newCameraPosition.y = lerp(n * 2.5, originalPosition.y, t);
+                                newCameraPosition.z = lerp(0, originalPosition.z, t);
+
+                                newCameraQuaternion.x = lerp(newCameraQuaternion.x, originalQuaternion.x, t);
+                                newCameraQuaternion.y = lerp(newCameraQuaternion.y, originalQuaternion.y, t);
+                                newCameraQuaternion.z = lerp(newCameraQuaternion.z, originalQuaternion.z, t);
+                                newCameraQuaternion.w = lerp(newCameraQuaternion.w, originalQuaternion.w, t);
+                            }
+                                    
+                            camera.position.set(newCameraPosition.x, newCameraPosition.y, newCameraPosition.z);
+                            camera.quaternion.slerp(newCameraQuaternion, t);
+
+                            // 지연 시간 동안 대기
+                            await sleep(delay);
+                        }
+                    }
                     
                     window.addEventListener('keydown', (event) => {
                         keys[event.code] = true;
@@ -739,8 +787,7 @@
                             hintElement.textContent = `Hint(Q): ${hint}`;
                             const originalPosition = camera.position.clone();
                             const originalQuaternion = camera.quaternion.clone();
-                            camera.position.set(0, n * 2.5, 0);
-                            camera.lookAt(0, 0, 0);
+                            moveCamera(originalPosition, originalQaternion, true);
 
                             topViewLight.visible = true;
                             directionalLight.visible = false;
@@ -806,8 +853,7 @@
                             if (pressT === 1 && !isTopView && !gameWon) {
                                 isTopView = true;
                                 gameWon = true;
-                                camera.position.set(0, n * 2, 0);
-                                camera.lookAt(0, 0, 0);
+                                moveCamera(originalPosition, originalQuaternion, true);
     
                                 // Temporarily remove fog
                                 scene.fog = null;
