@@ -787,6 +787,10 @@
                             hintElement.textContent = `Hint(Q): ${hint}`;
                             const originalPosition = camera.position.clone();
                             const originalQuaternion = camera.quaternion.clone();
+
+                            // Disable mouse movement during top view
+                            window.removeEventListener('mousemove', mouseMoveHandler);
+                            
                             moveCamera(originalPosition, originalQuaternion, true);
 
                             topViewLight.visible = true;
@@ -807,9 +811,6 @@
                             // Temporarily remove fog
                             scene.fog = null;
 
-                            // Disable mouse movement during top view
-                            window.removeEventListener('mousemove', mouseMoveHandler);
-
                             if (originalEffect) scene.remove(originalEffect);
 
                             // Create blue visual effect at the original position
@@ -823,8 +824,6 @@
                             setTimeout(() => {
                                 if (originalEffect) scene.remove(originalEffect);
                                 isTopView = false;
-                                moveCamera(originalPosition, originalQuaternion, false);
-                                window.addEventListener('mousemove', mouseMoveHandler); // Re-enable mouse movement handler
 
                                 const restoredWallMaterial = new THREE.MeshStandardMaterial({ 
                                     map: wallTexture
@@ -836,6 +835,9 @@
                                 scene.fog = originalFog;
                                 topViewLight.visible = false;
                                 directionalLight.visible = true;
+
+                                moveCamera(originalPosition, originalQuaternion, false);
+                                window.addEventListener('mousemove', mouseMoveHandler); // Re-enable mouse movement handler
                             }, 3000); // 3 seconds
                         }
 
